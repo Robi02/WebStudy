@@ -8,5 +8,6 @@
 <body>
 	<h1><spring:message code="name.page.main"/></h1>
 	<p><a href="members/register">[<spring:message code="members.register.title"/>]</a>
+	<p><a href="members/login">[<spring:message code="members.login.title"/>]</a>
 </body>
 </html>

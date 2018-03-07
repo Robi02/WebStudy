@@ -6,7 +6,9 @@
 
 	<!-- Member Commands -->
 	<bean id="memberRegistration" class="com.spring.yesorno.command.members.MemberRegistration"/>
-	<bean id="memberUpdate" class="com.spring.yesorno.command.members.MemberUpdate"/>
+	<bean id="memberInfoChange" class="com.spring.yesorno.command.members.MemberInfoChange"/>
+
+	<bean id="memberLogin" class="com.spring.yesorno.command.members.MemberLogin"/>
 
 	<!-- Other Commands -->
 	

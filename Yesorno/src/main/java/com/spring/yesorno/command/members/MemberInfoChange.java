@@ -1,15 +1,17 @@
 package com.spring.yesorno.command.members;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.validation.Errors;
 
 import com.spring.yesorno.dto.MemberDto;
 
-public class MemberUpdate implements IMemberCommand {
+public class MemberInfoChange implements IMemberCommand {
 
 	//@Autowired Validator memberRegistrationValidator;
 	//@Autowired MemberDao memberDao;
 	
-	public boolean execute(MemberDto memberDto, Errors errors) {		
+	public boolean execute(MemberDto memberDto, HttpServletResponse response, Errors errors) {		
 		boolean cmdResult = false;
 		/*
 		memberRegistrationValidator.validate(memberDto, errors);
