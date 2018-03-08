@@ -4,6 +4,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="memberRegistrationValidator" class="com.spring.yesorno.validator.members.MemberRegistrationValidator"/>
-	<bean id="memberLoginValidator" class="com.spring.yesorno.validator.members.MemberLoginValidator"/>	
+	<bean id="memberLoginValidator" class="com.spring.yesorno.validator.members.MemberLoginValidator"/>
+	<bean id="memberLogoutValidator" class="com.spring.yesorno.validator.members.MemberLogoutValidator"/>
+	<bean id="memberChangeInfoValidator" class="com.spring.yesorno.validator.members.MemberChangeInfoValidator"/>
+	
+	<bean id="memberChangeInfoPageValidator" class="com.spring.yesorno.validator.members.MemberChangeInfoPageValidator"/>
 	
 </beans>

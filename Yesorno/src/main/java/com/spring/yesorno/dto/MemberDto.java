@@ -31,6 +31,16 @@ public class MemberDto {
 	private Date memberLastLoginDate;	// DATETIME						멤버 마지막 로그인 일자
 	private String memberToken;			// VARCHAR(300)					멤버 토큰
 	
+	public void copy(MemberDto memberDto) {
+		memberId = memberDto.memberId;
+		memberGradeId = memberDto.memberGradeId;
+		memberEmail = memberDto.memberEmail;
+		memberNickname = memberDto.memberNickname;
+		memberJoinDate = memberDto.memberJoinDate;
+		memberLastLoginDate = memberDto.memberLastLoginDate;
+		memberToken = memberDto.memberToken;
+	}
+	
 	public int getMemberId() {
 		return memberId;
 	}

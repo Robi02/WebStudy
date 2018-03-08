@@ -5,11 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.spring.yesorno.command.members.IMemberCommand;
+import com.spring.yesorno.command.members.MemberChangeInfo;
 import com.spring.yesorno.dto.MemberDto;
 
 @Controller
@@ -17,9 +19,11 @@ import com.spring.yesorno.dto.MemberDto;
 public class MemberController {
 	
 	@Autowired IMemberCommand memberRegistration;	// 회원 가입
-	@Autowired IMemberCommand memberInfoChange;		// 회원정보 수정
-	
+	@Autowired IMemberCommand memberChangeInfo;		// 회원정보 수정
 	@Autowired IMemberCommand memberLogin;			// 로그인
+	@Autowired IMemberCommand memberLogout;			// 로그아웃
+	
+	@Autowired IMemberCommand memberChangeInfoPage;	// 회원정보 수정 페이지
 	
 	///////////////	///////////////	///////////////	///////////////	///////////////	///////////////	///////////////
 	
@@ -48,16 +52,17 @@ public class MemberController {
 	
 	// 회원 정보 수정 (U)
 	@RequestMapping(method = RequestMethod.PUT)
-	public String memberUpdate(@ModelAttribute("infoChangeMember")MemberDto memberDto, HttpServletResponse response, Errors errors) {
+	public String memberUpdate(@ModelAttribute("changeInfoMember")MemberDto memberDto, @CookieValue("memberToken")String memberToken, HttpServletResponse response, Errors errors) {
 		String resultURL = "error";
 		boolean cmdResult = false;
-		
-		cmdResult = memberInfoChange.execute(memberDto, response, errors);
+
+		memberDto.setMemberToken(memberToken);
+		cmdResult = memberChangeInfo.execute(memberDto, response, errors);
 		
 		if (cmdResult == false || errors.hasErrors()) {
-			resultURL = "members/infochange"; // Error
+			resultURL = "/members/changeinfo"; // Error
 		} else {
-			resultURL = "main"; // Okay
+			resultURL = "redirect:/main"; // Okay
 		}
 		
 		return resultURL;
@@ -80,15 +85,33 @@ public class MemberController {
 		cmdResult = memberLogin.execute(memberDto, response, errors);
 		
 		if (cmdResult == false || errors.hasErrors()) {
-			resultURL = "members/login"; // Error
+			resultURL = "/members/login"; // Error
 		} else {
-			resultURL = "main"; // Okay
+			resultURL = "redirect:/main"; // Okay
 		}
 		
 		return resultURL;
 	}
-/////////////////////////////////////
 	
+	// 로그아웃
+	@RequestMapping(value ="/logout", method = RequestMethod.GET)
+	public String memberLogout(@ModelAttribute("loginMember")MemberDto memberDto, @CookieValue("memberToken")String memberToken, HttpServletResponse response, Errors errors) {
+		String resultURL = "error";
+		boolean cmdResult = false;
+		//MemberDto memberDto = new MemberDto();
+
+		memberDto.setMemberToken(memberToken);
+		cmdResult = memberLogout.execute(memberDto, response, errors);
+		
+		if (cmdResult == false || errors.hasErrors()) {
+			resultURL = "redirect:/main"; // Error
+		} else {
+			resultURL = "redirect:/main"; // Okay
+		}
+		
+		return resultURL;
+	}
+
 	///////////////	///////////////	///////////////	///////////////	///////////////	///////////////	///////////////
 	
 	// 회원 가입 페이지
@@ -104,8 +127,20 @@ public class MemberController {
 	}
 	
 	// 회원정보 수정 페이지
-	@RequestMapping(value ="/infochange", method = RequestMethod.GET)
-	public String memberInfoChangePage(@ModelAttribute("infoChangeMember")MemberDto memberDto, Errors errors) {
-		return "members/infochagne";
+	@RequestMapping(value ="/changeinfo", method = RequestMethod.GET)
+	public String memberChangeInfoPage(@ModelAttribute("changeInfoMember")MemberDto memberDto, @CookieValue("memberToken")String memberToken, HttpServletResponse response, Errors errors) {
+		String resultURL = "error";
+		boolean cmdResult = false;
+
+		memberDto.setMemberToken(memberToken);
+		cmdResult = memberChangeInfoPage.execute(memberDto, response, errors);
+		
+		if (cmdResult == false || errors.hasErrors()) {
+			resultURL = "redirect:/main"; // Error
+		} else {
+			resultURL = "members/changeinfo"; // Okay
+		}
+		
+		return resultURL;
 	}
 }

@@ -6,15 +6,14 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title><spring:message code="members.infochange.title"/></title>
+	<title><spring:message code="members.changeinfo.title"/></title>
 </head>
 <body>
-	<h1><spring:message code="members.infochange.title"/></h1>
-	<form:form action="./" method="put" modelAttribute="infoChangeMember">
+	<h1><spring:message code="members.changeinfo.title"/></h1>
+	<form:form action="./" method="put" modelAttribute="changeInfoMember">
 		<p>
-			<c:set var="members.register.email.placeholder"><spring:message code="members.register.email.placeholder"/></c:set>
 			<spring:message code="members.register.email"/> : 
-			<form:input path="memberEmail" placeholder="${members.register.email.placeholder}" disabled/>
+			<form:input path="memberEmail" readonly="true"/>
 		</p>
 		<p>
 			<c:set var="members.register.nickname.placeholder"><spring:message code="members.register.nickname.placeholder"/></c:set>

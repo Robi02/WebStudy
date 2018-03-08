@@ -9,5 +9,11 @@
 	<h1><spring:message code="name.page.main"/></h1>
 	<p><a href="members/register">[<spring:message code="members.register.title"/>]</a>
 	<p><a href="members/login">[<spring:message code="members.login.title"/>]</a>
+	<p><a href="members/logout">[<spring:message code="members.logout.title"/>]</a>
+	<p><a href="members/changeinfo">[<spring:message code="members.changeinfo.title"/>]</a>
+	<p>memberId : ${memberDto.memberId}</p>
+	<p>memberEmail : ${memberDto.memberEmail}</p>
+	<p>memberNickname : ${memberDto.memberNickname}</p>
+	<p>memberTokenCookie : ${memberDto.memberToken}</p>
 </body>
 </html>

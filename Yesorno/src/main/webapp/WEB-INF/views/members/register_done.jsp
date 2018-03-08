@@ -8,6 +8,6 @@
 </head>
 <body>
 	<p><spring:message code="members.register.welcome" arguments="${registerMember.memberNickname}"/></p>
-	<p><a href="<c:url value='/main'/>">[<spring:message code="name.page.main"/>]</a></p>
+	<p><a href="../main">[<spring:message code="name.page.main"/>]</a></p>
 </body>
 </html>

@@ -37,7 +37,14 @@ public class MemberLogin implements IMemberCommand {
 					// 로그인 성공: 맴버토큰을 생성하여 쿠키에 담음
 					if (cmdResult) {
 						String memberToken = jwtMemberService.createMemberToken(memberDto, errors);
-						response.addCookie(new Cookie("memberToken", memberToken));
+						
+						System.out.println("memberToken : " + memberToken); // Only for test
+						
+						Cookie memberCookie = new Cookie("memberToken", memberToken);
+						memberCookie.setPath("/");
+						memberCookie.setComment("memberToken");
+						memberCookie.setMaxAge((int)(JwtMemberService.tokenExpTimeDelta / 1000.0f));
+						response.addCookie(memberCookie);
 					}
 				}
 			} catch (Exception e) {

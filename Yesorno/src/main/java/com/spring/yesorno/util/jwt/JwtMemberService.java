@@ -2,7 +2,6 @@ package com.spring.yesorno.util.jwt;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.Map;
 
 import org.springframework.validation.Errors;
 
@@ -15,7 +14,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtMemberService {
 
-	private static final long tokenExpTimeDelta = 1000 * 60 * 15; // 15분
+	public static final long tokenExpTimeDelta = 1000 * 60 * 5; // 5분
 	private final String keyHS256;
 	
 	public JwtMemberService(String keyHS256) {
@@ -46,29 +45,42 @@ public class JwtMemberService {
 	}
 	
 	// 토큰 검증
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> authMemberToken(String jwt, MemberDto memberDto, Errors errors) {
-		Map<String, Object> resultMap = null;
-		
+	public String authMemberToken(String jwt, Errors errors) {
+		String authMemberEmail = null;
 		Jws<Claims> claims = null;
-		
+
 		try {
-			claims = Jwts.parser()
-						 .setSigningKey(keyHS256.getBytes("UTF-8"))
-						 .parseClaimsJws(jwt);
-			resultMap = (Map<String, Object>)claims.getBody().get("memberId");
+			// 토큰 검사 - 파싱이 가능하면 아래 5가지 예외에서 벗어난 상태
+			claims = Jwts.parser().setSigningKey(keyHS256.getBytes("UTF-8")).parseClaimsJws(jwt);
+			authMemberEmail = claims.getBody().get("memberEmail", String.class);
 		} catch (Exception e) {
-			/*	[Throws]
-				1) ExpiredJwtException : 유효기간 초과
-				2) UnsupportedJwtException : 일치하지 않는 특정 형식이나 구성
-				3) MalformedJwtException : 올바르게 구성되지 않음
-				4) SignatureException : 서명 확인 불가
-				5) IllegalArgumentException : null이거나 빈칸
-			*/
+			/* [Throws]
+			1) ExpiredJwtException : 유효기간 초과
+			2) UnsupportedJwtException : 일치하지 않는 특정 형식이나 구성
+			3) MalformedJwtException : 올바르게 구성되지 않음
+			4) SignatureException : 서명 확인 불가
+			5) IllegalArgumentException : null이거나 빈칸 */
+			e.printStackTrace();
+			errors.reject("error.invailedToken");
+			authMemberEmail = null;
+		}
+
+		// 검증 완료 시 토큰 이메일 반환
+		return authMemberEmail;
+	}
+}
+
+/*
+ * @SuppressWarnings("unchecked")
+try {
+claims = Jwts.parser()
+.setSigningKey(keyHS256.getBytes("UTF-8"))
+.parseClaimsJws(jwt);
+resultMap = (Map<String, Object>)claims.getBody().get("memberId");
+		} catch (Exception e) {
+			
+			
 			errors.reject("error.loginTokenError");
 			resultMap = null;
 		}
-
-		return resultMap;
-	}
-}
+		*/

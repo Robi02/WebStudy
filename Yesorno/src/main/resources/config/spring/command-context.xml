@@ -6,9 +6,11 @@
 
 	<!-- Member Commands -->
 	<bean id="memberRegistration" class="com.spring.yesorno.command.members.MemberRegistration"/>
-	<bean id="memberInfoChange" class="com.spring.yesorno.command.members.MemberInfoChange"/>
+	<bean id="memberChangeInfo" class="com.spring.yesorno.command.members.MemberChangeInfo"/>
+	<bean id="memberChangeInfoPage" class="com.spring.yesorno.command.members.MemberChangeInfoPage"/>
 
 	<bean id="memberLogin" class="com.spring.yesorno.command.members.MemberLogin"/>
+	<bean id="memberLogout" class="com.spring.yesorno.command.members.MemberLogout"/>
 
 	<!-- Other Commands -->
 	
