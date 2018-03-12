@@ -10,7 +10,7 @@
 </head>
 <body>
 	<h1><spring:message code="members.login.title"/></h1>
-	<form:form action="./login" method="post" modelAttribute="loginMember">
+	<form:form action="./login" method="POST" modelAttribute="memberLoginCmd">
 		<p>
 			<c:set var="members.register.email.placeholder"><spring:message code="members.register.email.placeholder"/></c:set>
 			<spring:message code="members.register.email"/> : 

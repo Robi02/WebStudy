@@ -10,7 +10,7 @@
 </head>
 <body>
 	<h1><spring:message code="members.changeinfo.title"/></h1>
-	<form:form action="./" method="put" modelAttribute="changeInfoMember">
+	<form:form action="./" method="PUT" modelAttribute="memberInfoChangeCmd">
 		<p>
 			<spring:message code="members.register.email"/> : 
 			<form:input path="memberEmail" readonly="true"/>

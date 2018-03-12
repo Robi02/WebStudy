@@ -10,12 +10,12 @@
 </head>
 <body>
 	<h1><spring:message code="members.register.title"/></h1>
-	<form:form action="./" method="post" modelAttribute="registerMember">
+	<form:form action="./" method="POST" modelAttribute="memberRegistrationCmd">
 		<p>
 			<c:set var="members.register.email.placeholder"><spring:message code="members.register.email.placeholder"/></c:set>
 			<spring:message code="members.register.email"/> : 
 			<form:input path="memberEmail" placeholder="${members.register.email.placeholder}"/>
-			<form:errors path="memberEmail"/>
+			<form:errors path="memberEmail" cssClass="error"/>
 		</p>
 		<p><spring:message code="members.register.password"/> : <input type="password" name="password" placeholder="<spring:message code="members.register.password.placeholder"/>"/></p>
 		<p><spring:message code="members.register.passwordConfirm"/>: <input type="password" name="passwordConfirm"/></p>

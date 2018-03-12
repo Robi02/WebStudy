@@ -7,7 +7,7 @@
 	<title><spring:message code="members.register.title"/></title>
 </head>
 <body>
-	<p><spring:message code="members.register.welcome" arguments="${registerMember.memberNickname}"/></p>
+	<p><spring:message code="members.register.welcome" arguments="${memberRegistrationCmd.memberNickname}"/></p>
 	<p><a href="../main">[<spring:message code="name.page.main"/>]</a></p>
 </body>
 </html>

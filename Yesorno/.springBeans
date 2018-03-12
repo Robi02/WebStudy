@@ -11,6 +11,13 @@
 		<config>src/main/resources/config/spring/root-context.xml</config>
 	</configs>
 	<autoconfigs>
+		<config>src/main/resources/config/spring/message-context.xml</config>
+		<config>src/main/resources/config/spring/jwt-context.xml</config>
+		<config>src/main/resources/config/spring/db-context.xml</config>
+		<config>src/main/resources/config/spring/service-context.xml</config>
+		<config>src/main/resources/config/spring/mapper-context.xml</config>
+		<config>src/main/resources/config/spring/dao-context.xml</config>
+		<config>src/main/resources/config/spring/validator-context.xml</config>
 	</autoconfigs>
 	<configSets>
 	</configSets>

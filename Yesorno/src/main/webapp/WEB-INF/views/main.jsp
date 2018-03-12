@@ -7,13 +7,24 @@
 </head>
 <body>
 	<h1><spring:message code="name.page.main"/></h1>
-	<p><a href="members/register">[<spring:message code="members.register.title"/>]</a>
-	<p><a href="members/login">[<spring:message code="members.login.title"/>]</a>
-	<p><a href="members/logout">[<spring:message code="members.logout.title"/>]</a>
-	<p><a href="members/changeinfo">[<spring:message code="members.changeinfo.title"/>]</a>
-	<p>memberId : ${memberDto.memberId}</p>
-	<p>memberEmail : ${memberDto.memberEmail}</p>
-	<p>memberNickname : ${memberDto.memberNickname}</p>
-	<p>memberTokenCookie : ${memberDto.memberToken}</p>
+	<p><a href="main">[메인]</a></p>
+	
+	<c:choose>
+		<c:when test="${empty loginMember.memberToken}">
+			<p><a href="members/register">[<spring:message code="members.register.title"/>]</a>
+			<p><a href="members/login">[<spring:message code="members.login.title"/>]</a>	
+		</c:when>
+		<c:otherwise>
+			<p><a href="members/logout">[<spring:message code="members.logout.title"/>]</a>
+			<p><a href="members/infochange">[<spring:message code="members.changeinfo.title"/>]</a>
+			<p><a href="members/deregister">[<spring:message code="members.deregister.title"/>]</a>
+			
+			<!-- TEST -->
+			<p>memberId : ${loginMember.memberId}</p>
+			<p>memberEmail : ${loginMember.memberEmail}</p>
+			<p>memberNickname : ${loginMember.memberNickname}</p>
+			<p>memberToken : ${loginMember.memberToken}</p>	
+		</c:otherwise>
+	</c:choose>
 </body>
 </html>

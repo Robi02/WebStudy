@@ -4,19 +4,20 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import com.spring.yesorno.command.members.MemberInfoChangeCmd;
 import com.spring.yesorno.dto.MemberDto;
 
-public class MemberChangeInfoValidator implements Validator {
+public class MemberInfoChangeValidator implements Validator {
 	
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return MemberChangeInfoValidator.class.isAssignableFrom(clazz);
+		return MemberInfoChangeValidator.class.isAssignableFrom(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		final MemberDto memberDto = (MemberDto)target;
-		final String memberNickname = memberDto.getMemberNickname();
+		final MemberInfoChangeCmd cmd = (MemberInfoChangeCmd)target;
+		final String memberNickname = cmd.getMemberNickname();
 
 		// memberNickname 양식 확인
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "memberNickname", "error.required");
