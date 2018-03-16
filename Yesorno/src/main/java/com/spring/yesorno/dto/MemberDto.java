@@ -2,6 +2,7 @@ package com.spring.yesorno.dto;
 
 import java.util.Date;
 
+/** 회원 DB접근 */
 public class MemberDto {
 
 	public enum EnumMemberGradeId {
@@ -23,7 +24,7 @@ public class MemberDto {
 		}
 	}
 
-	private int memberId;				// INT				PK			멤버 번호
+	private int memberId;				// INT				PK,AI		멤버 번호
 	private int memberGradeId;			// INT				FK,NN		멤버 등급 코드
 	private String memberEmail;			// VARCHAR(128)		UQ,NN		멤버 이메일
 	private String memberNickname;		// VARCHAR(16)		UQ,NN		멤버 닉네임

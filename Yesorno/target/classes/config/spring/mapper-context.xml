@@ -28,17 +28,17 @@
 
 	<!-- Mybatis -->
 	<beans> 
-	    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+	    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 	        <property name="dataSource" ref="dataSource" />
 			<property name="configLocation" value="classpath:/mapper/mybatis_config.xml"/>
 	        <property name="mapperLocations" value="classpath:/mapper/**/*_SQL.xml" />
 	    </bean>
 	     
-	    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-	        <constructor-arg index="0" ref="sqlSession"/>
+	    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
 	    </bean>
     </beans>
  
-    <!-- [참고]http://addio3305.tistory.com/62 -->
+    <!-- [참고] http://addio3305.tistory.com/62 -->
  	
 </beans>

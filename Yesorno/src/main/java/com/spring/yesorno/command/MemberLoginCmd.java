@@ -1,4 +1,4 @@
-package com.spring.yesorno.command.members;
+package com.spring.yesorno.command;
 
 public class MemberLoginCmd {
 

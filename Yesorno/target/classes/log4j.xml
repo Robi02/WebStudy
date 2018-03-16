@@ -12,7 +12,7 @@
 	
 	<!-- Application Loggers -->
 	<logger name="com.spring.yesorno">
-		<level value="info" />
+		<level value="DEBUG" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
@@ -34,8 +34,21 @@
 
 	<!-- Root Logger -->
 	<root>
-		<priority value="info" /> <!-- warn -> info [2018-03-07] (ONLY FOR TEST) -->
+		<priority value="off" />
 		<appender-ref ref="console" />
 	</root>
 	
+	<!-- [Note - priority]
+
+	FATAL : 아주 심각한 에러가 발생한 상태
+	ERROR : 어떠한 요청을 처리하는 중 문제가 발생한 상태
+ 	WARN : 향후 시스템 에러의 원인이 될수 있는 경고성 메시지
+ 	INFO : 어떠한 상태변경과 같은 정보성 메시지
+ 	DEBUG : 개발시 디버그 용도로 사용하는 메시지
+ 	TRACE : 디버그 레벨이 너무 광범위한것을 해결하기 위해서 좀 더 상세한 이벤트 부여
+
+	출처: http://addio3305.tistory.com/43 [흔한 개발자의 개발 노트]
+
+	-->
+
 </log4j:configuration>

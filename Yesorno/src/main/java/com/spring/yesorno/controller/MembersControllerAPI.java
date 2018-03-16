@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.spring.yesorno.command.members.MemberInfoChangeCmd;
-import com.spring.yesorno.command.members.MemberRegistrationCmd;
+import com.spring.yesorno.command.MemberInfoChangeCmd;
+import com.spring.yesorno.command.MemberRegistrationCmd;
+import com.spring.yesorno.exception.MemberException;
 import com.spring.yesorno.service.MemberService;
 
 @Controller
@@ -35,15 +36,10 @@ public class MembersControllerAPI {
 		if (errors.hasErrors()) {
 			resultURL = errURL; // Error
 		} else {
-			try {
-				if (memberService.memberRegistration(cmd, errors) && !errors.hasErrors()) {
-					resultURL = okURL; // Okay
-				} else {
-					resultURL = errURL; // Error
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				//if (instanceof)
+			if (memberService.memberRegistration(cmd, errors) && !errors.hasErrors()) {
+				resultURL = okURL; // Okay
+			} else {
+				resultURL = errURL; // Error
 			}
 		}
 
@@ -67,7 +63,7 @@ public class MembersControllerAPI {
 				} else {
 					resultURL = errURL; // Error
 				}
-			} catch (Exception e) {
+			} catch (MemberException e) {
 				e.printStackTrace();
 			}
 		}
@@ -88,7 +84,7 @@ public class MembersControllerAPI {
 			} else {
 				resultURL = errURL; // Error
 			}
-		} catch (Exception e) {
+		} catch (MemberException e) {
 			e.printStackTrace();
 		}
 

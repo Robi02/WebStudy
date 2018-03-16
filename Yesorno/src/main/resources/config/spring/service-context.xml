@@ -6,5 +6,10 @@
 
 	<!-- Member Service -->
 	<bean id="memberService" class="com.spring.yesorno.service.MemberService"/>
+	
+	<!-- VoteBoard Service -->
+	<bean id="voteBoardService" class="com.spring.yesorno.service.VoteBoardService">
+		<constructor-arg name="dataPerPage" value="8"/> <!-- 한 페이지에 표시할 게시글의 수 -->
+	</bean>
 
 </beans>

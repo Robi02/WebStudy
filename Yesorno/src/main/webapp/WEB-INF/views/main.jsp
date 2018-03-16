@@ -8,7 +8,8 @@
 <body>
 	<h1><spring:message code="name.page.main"/></h1>
 	<p><a href="main">[메인]</a></p>
-	
+	<p><a href="boards/voteboards/list/1">[찬반게시판]</a></p>
+
 	<c:choose>
 		<c:when test="${empty loginMember.memberToken}">
 			<p><a href="members/register">[<spring:message code="members.register.title"/>]</a>
@@ -18,7 +19,7 @@
 			<p><a href="members/logout">[<spring:message code="members.logout.title"/>]</a>
 			<p><a href="members/infochange">[<spring:message code="members.changeinfo.title"/>]</a>
 			<p><a href="members/deregister">[<spring:message code="members.deregister.title"/>]</a>
-			
+
 			<!-- TEST -->
 			<p>memberId : ${loginMember.memberId}</p>
 			<p>memberEmail : ${loginMember.memberEmail}</p>

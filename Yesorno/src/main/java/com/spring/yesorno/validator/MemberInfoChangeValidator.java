@@ -1,10 +1,10 @@
-package com.spring.yesorno.validator.members;
+package com.spring.yesorno.validator;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.spring.yesorno.command.members.MemberInfoChangeCmd;
+import com.spring.yesorno.command.MemberInfoChangeCmd;
 import com.spring.yesorno.dto.MemberDto;
 
 public class MemberInfoChangeValidator implements Validator {

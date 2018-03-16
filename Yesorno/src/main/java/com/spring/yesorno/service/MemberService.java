@@ -11,9 +11,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 
-import com.spring.yesorno.command.members.MemberInfoChangeCmd;
-import com.spring.yesorno.command.members.MemberLoginCmd;
-import com.spring.yesorno.command.members.MemberRegistrationCmd;
+import com.spring.yesorno.command.MemberInfoChangeCmd;
+import com.spring.yesorno.command.MemberLoginCmd;
+import com.spring.yesorno.command.MemberRegistrationCmd;
 import com.spring.yesorno.dao.MemberDao;
 import com.spring.yesorno.dto.MemberDto;
 import com.spring.yesorno.exception.MemberException;
@@ -49,7 +49,7 @@ public class MemberService {
 	// 회원 가입
 	public boolean memberRegistration(MemberRegistrationCmd cmd, Errors errors) {
 		boolean svcResult = false;
-		
+
 		try {
 			MemberDto registerMember = new MemberDto();
 			registerMember.setMemberEmail(cmd.getMemberEmail());								// 이메일

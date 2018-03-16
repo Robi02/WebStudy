@@ -3,8 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="memberRegistrationValidator" class="com.spring.yesorno.validator.members.MemberRegistrationValidator"/>
-	<bean id="memberLoginValidator" class="com.spring.yesorno.validator.members.MemberLoginValidator"/>
-	<bean id="memberInfoChangeValidator" class="com.spring.yesorno.validator.members.MemberInfoChangeValidator"/>
+	<bean id="memberRegistrationValidator" class="com.spring.yesorno.validator.MemberRegistrationValidator"/>
+	<bean id="memberLoginValidator" class="com.spring.yesorno.validator.MemberLoginValidator"/>
+	<bean id="memberInfoChangeValidator" class="com.spring.yesorno.validator.MemberInfoChangeValidator"/>
+	
+	<bean id="voteBoardWriteValidator" class="com.spring.yesorno.validator.VoteBoardWriteValidator"/>
 	
 </beans>

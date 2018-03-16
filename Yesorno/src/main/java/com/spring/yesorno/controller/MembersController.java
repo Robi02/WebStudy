@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.spring.yesorno.command.members.MemberLoginCmd;
+import com.spring.yesorno.command.MemberLoginCmd;
 import com.spring.yesorno.service.MemberService;
 
 @Controller
