@@ -16,22 +16,22 @@
 </head>
 <body>
 	<div class="container" style="padding-top: 100px;">
-		<h2 class="page.headder">글쓰기</h2>
+		<h2 class="page.headder"><spring:message code="boards.write"/></h2>
 		<form:form action="./" method="POST" modelAttribute="voteBoardWriteCmd" enctype="multipart/form-data">
 			<table class="table table-bordered">
 				<tr>
-					<th>글 제목</th>
+					<th><spring:message code="boards.title"/></th>
 					<td><form:input path="voteBoardTitle" class="form-control"/></td>
 				</tr>
 				<tr>
-					<th>마감 기준</th>
+					<th><spring:message code="boards.voteEndCondition"/></th>
 					<td>
-						<p>투표 인원 수 : <form:input type="number" path="voteEndCnt" value="100"/></p>
-						<p>투표 마감일 : <input type="date" id="voteEndDate" value="2018-10-10"/></p>
+						<p><spring:message code="boards.voteLimitCnt"/>: <form:input type="number" path="voteEndCnt" value="100"/></p>
+						<p><spring:message code="boards.voteLimitDate"/>: <input type="date" id="voteEndDate" value="2018-10-10"/></p>
 					</td>
 				</tr>
 				<tr>
-					<th>파일</th>
+					<th><spring:message code="boards.image"/></th>
 					<td>
 						<div class="fileForm">
 							<input type="file" name="voteBoardThumbnailImage" accept=".jpg, .jpeg, .png, .bmp"/>
@@ -39,7 +39,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th>글 내용</th>
+					<th><spring:message code="boards.content"/></th>
 					<form:hidden id="voteBoardContent" path="voteBoardContent" value="testDefault"/>
 					<td><textarea class="form-control" id="summernote" name="content" placeholder="content" maxlength="140" rows="7"></textarea></td>
 				</tr>

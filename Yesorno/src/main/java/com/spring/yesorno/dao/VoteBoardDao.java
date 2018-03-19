@@ -18,6 +18,12 @@ public class VoteBoardDao implements IVoteBoardDao{
 		return voteBoardDao.selectVoteBoardRowCount();
 	}
 	
+	// 게시글 번호로 조회
+	public VoteBoardDto selectVoteBoard(int boardId) throws DataAccessException {
+		IVoteBoardDao voteBoardDao = sqlSession.getMapper(IVoteBoardDao.class);
+		return voteBoardDao.selectVoteBoard(boardId);
+	}
+	
 	// 게시글 페이지로 조회
 	public ArrayList<VoteBoardDto> selectVoteBoardList(int begin, int dataPerPage) throws DataAccessException {
 		IVoteBoardDao voteBoardDao = sqlSession.getMapper(IVoteBoardDao.class);

@@ -1,7 +1,6 @@
 package com.spring.yesorno.service;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +24,7 @@ import com.spring.yesorno.dao.VoteProgressDao;
 import com.spring.yesorno.dto.MemberDto;
 import com.spring.yesorno.dto.VoteBoardDto;
 import com.spring.yesorno.dto.VoteBoardListDto;
+import com.spring.yesorno.dto.VoteBoardReadDto;
 import com.spring.yesorno.dto.VoteProgressDto;
 import com.spring.yesorno.exception.MemberException;
 import com.spring.yesorno.util.jwt.JwtMemberAuth;
@@ -49,10 +49,98 @@ public class VoteBoardService {
 		BoardPerPage = dataPerPage;
 	}
 	
+	//////////	//////////	//////////	//////////	//////////	//////////	//////////
+	
+	// 투표 게시글, 투표 진행상황등 조인작업을 서버에서 수행하는 함수
+	private ArrayList<VoteBoardListDto> ConcatenateVoteBoardListDto(HttpServletRequest request, ArrayList<VoteBoardDto> voteBoardDtoList) {
+		ArrayList<VoteBoardListDto> rtVoteBoardList = new ArrayList<VoteBoardListDto>(); // 반환값을 담을 배열
+		ArrayList<Integer> boardIdList = new ArrayList<Integer>(); // 매개변수 투표 게시글들의 ID를 담는 배열
+
+ 		for (VoteBoardDto voteBoard : voteBoardDtoList) {
+ 			int boardId = voteBoard.getVoteBoardId();
+ 			if (!boardIdList.contains(boardId)) {
+ 				boardIdList.add(boardId);
+ 			}
+ 		}
+
+ 		ArrayList<VoteProgressDto> voteProgressList = null;	// 연관된 게시글들의 투표 리스트
+ 		voteProgressList = voteProgressDao.selectVoteProgressList(boardIdList);
+
+ 		// 게시글 리스트 DTO 생성
+ 		for (VoteBoardDto voteBoard : voteBoardDtoList) {
+ 			VoteBoardListDto boardDto = new VoteBoardListDto();	// 특정 게시글 DTO, voteBoardDtoList에 추가하여 반환
+ 			
+ 			// 게시글 기본항목 초기화
+ 			boardDto.setVoteBoardTitle(voteBoard.getVoteBoardTitle());
+ 			String voteBoardImgURL = voteBoard.getVoteBoardImageURL();
+ 			String realPath = request.getSession().getServletContext().getRealPath("");
+ 			if (voteBoardImgURL == null || voteBoardImgURL.length() == 0) {
+ 				voteBoardImgURL = (realPath + DefaultImageURL);
+ 			} else {
+ 				voteBoardImgURL = (realPath + voteBoardImgURL);
+ 				// 파일 존재 확인
+ 				File imgFile = new File(voteBoardImgURL);
+ 				if (!imgFile.exists()) {
+ 					voteBoardImgURL = (realPath + DefaultImageURL);
+ 				}
+ 			}
+
+ 			boardDto.setVoteBoardId(voteBoard.getVoteBoardId());
+ 			boardDto.setVoteBoardImageURL(voteBoardImgURL);
+			boardDto.setVoteAgreeCnt(0);
+			boardDto.setVoteDisagreeCnt(0);
+			boardDto.setVoteBoardState(VoteBoardListDto.EnumVoteBoardState.BS_PROGRESSING);
+
+ 			// 게시글 투표 결과 설정
+				int totalVoteCnt = 0;
+
+ 			if (voteProgressList != null) {
+ 				int agreeCnt = 0, disagreeCnt = 0;
+ 				
+ 				for (VoteProgressDto voteProgress : voteProgressList) {
+ 					if (voteBoard.getVoteBoardId() == voteProgress.getVoteBoardId() ) {
+	 					if (voteProgress.getVoteResult() > 0) {
+	 						++agreeCnt;
+	 					} else if (voteProgress.getVoteResult() < 0) {
+	 						++disagreeCnt;
+	 					} else {
+	 						++totalVoteCnt;
+	 					}
+ 					}
+	 			}
+ 				// 투표 결과 종합
+ 				boardDto.setVoteAgreeCnt(agreeCnt);
+ 				boardDto.setVoteDisagreeCnt(disagreeCnt);
+ 				totalVoteCnt = agreeCnt + disagreeCnt;
+ 			}
+ 			
+ 			// 게시글 상태 설정
+ 			final long endDate = voteBoard.getVoteEndDate().getTime();
+ 			final long today = new Date().getTime();
+ 			final long timeLeft = endDate - today;
+ 			final int voteLimit = voteBoard.getVoteEndCnt();
+ 			final int voteImmerseCnt = (int)(VoteBoardImminentVoterPercent * voteLimit);
+
+ 			if (timeLeft <= 0 || totalVoteCnt >= voteLimit) { // 투표 마감
+ 				boardDto.setVoteBoardState(VoteBoardListDto.EnumVoteBoardState.BS_ENDED);
+ 			} else if (timeLeft <= VoteBoardImminentMillisecond || totalVoteCnt >= voteImmerseCnt) { // 마감 임박 
+ 				boardDto.setVoteBoardState(VoteBoardListDto.EnumVoteBoardState.BS_IMMINENT);
+ 			} else { // 진행중
+ 				boardDto.setVoteBoardState(VoteBoardListDto.EnumVoteBoardState.BS_PROGRESSING);
+ 			}
+ 			
+ 			rtVoteBoardList.add(boardDto);
+ 		}
+		
+		return rtVoteBoardList;
+	}
+	
+	//////////	//////////	//////////	//////////	//////////	//////////	//////////
+	
 	// 투표 게시글 리스팅
 	public boolean voteBoardListing(HttpServletRequest request, int page, Model model) {
 		boolean svcResult = true;
-		ArrayList<VoteBoardListDto> voteBoardDtoList = new ArrayList<VoteBoardListDto>();
+		ArrayList<VoteBoardListDto> voteBoardDtoList = null;
 		
 		try {
 			// 게시글 리스트 가져오기
@@ -62,86 +150,9 @@ public class VoteBoardService {
 	 		if ((voteBoardList = voteBoardDao.selectVoteBoardList(begin, BoardPerPage)) == null) {
 	 			return false;
 	 		}
-	 		
-	 		// 게시글에 연관된 투표 진행상황 가져오기
-	 		ArrayList<VoteProgressDto> voteProgressList = null;	// 특정 게시글의 투표 결과들
-	 		ArrayList<Integer> boardIdList = new ArrayList<Integer>();
-	 		
-	 		for (VoteBoardDto voteBoard : voteBoardList) {
-	 			int boardId = voteBoard.getVoteBoardId();
-	 			if (!boardIdList.contains(boardId)) {
-	 				boardIdList.add(boardId);
-	 			}
-	 		}
 
-	 		voteProgressList = voteProgressDao.selectVoteProgressList(boardIdList);
-
-	 		// 게시글 리스트 DTO 생성 (DB조인 작업을 서버에서 대리 수행)
-	 		for (VoteBoardDto voteBoard : voteBoardList) {
-	 			
-	 			VoteBoardListDto boardDto = new VoteBoardListDto();	// 특정 게시글 DTO, voteBoardDtoList에 추가하여 반환
-	 			
-	 			// 게시글 기본항목 초기화
-	 			boardDto.setVoteBoardTitle(voteBoard.getVoteBoardTitle());
-	 			String voteBoardImgURL = voteBoard.getVoteBoardImageURL();
-	 			String realPath = request.getSession().getServletContext().getRealPath("");
-	 			if (voteBoardImgURL == null || voteBoardImgURL.length() == 0) {
-	 				voteBoardImgURL = (realPath + DefaultImageURL);
-	 			} else {
-	 				voteBoardImgURL = (realPath + voteBoardImgURL);
-	 				// 파일 존재 확인
-	 				File imgFile = new File(voteBoardImgURL);
-	 				if (!imgFile.exists()) {
-	 					voteBoardImgURL = (realPath + DefaultImageURL);
-	 				}
-	 			}
-
-	 			boardDto.setVoteBoardImageURL(voteBoardImgURL);
- 				boardDto.setVoteAgreeCnt(0);
- 				boardDto.setVoteDisagreeCnt(0);
- 				boardDto.setVoteBoardState(VoteBoardListDto.EnumVoteBoardState.BS_PROGRESSING);
-
-	 			// 게시글 투표 결과 설정
- 				int totalVoteCnt = 0;
-
-	 			if (voteProgressList != null) {
-	 				int agreeCnt = 0, disagreeCnt = 0;
-	 				
-	 				for (VoteProgressDto voteProgress : voteProgressList) {
-	 					if (voteBoard.getVoteBoardId() == voteProgress.getVoteBoardId() ) {
-		 					if (voteProgress.getVoteResult() > 0) {
-		 						++agreeCnt;
-		 					} else if (voteProgress.getVoteResult() < 0) {
-		 						++disagreeCnt;
-		 					} else {
-		 						++totalVoteCnt;
-		 					}
-	 					}
-		 			}
-	 				// 투표 결과 종합
-	 				boardDto.setVoteAgreeCnt(agreeCnt);
-	 				boardDto.setVoteDisagreeCnt(disagreeCnt);
-	 				totalVoteCnt = agreeCnt + disagreeCnt;
-	 			}
-	 			
-	 			// 게시글 상태 설정
-	 			final long endDate = voteBoard.getVoteEndDate().getTime();
-	 			final long today = new Date().getTime();
-	 			final long timeLeft = endDate - today;
-	 			final int voteLimit = voteBoard.getVoteEndCnt();
-	 			final int voteImmerseCnt = (int)(VoteBoardImminentVoterPercent * voteLimit);
-
-	 			if (timeLeft <= 0 || totalVoteCnt >= voteLimit) { // 투표 마감
-	 				boardDto.setVoteBoardState(VoteBoardListDto.EnumVoteBoardState.BS_ENDED);
-	 			} else if (timeLeft <= VoteBoardImminentMillisecond || totalVoteCnt >= voteImmerseCnt) { // 마감 임박 
-	 				boardDto.setVoteBoardState(VoteBoardListDto.EnumVoteBoardState.BS_IMMINENT);
-	 			} else { // 진행중
-	 				boardDto.setVoteBoardState(VoteBoardListDto.EnumVoteBoardState.BS_PROGRESSING);
-	 			}
-
-	 			// Model에 담아보낼 리스트에 추가
-	 			svcResult |= voteBoardDtoList.add(boardDto);
-	 		}
+	 		// 투표 결과와 투표 게시글 조인 수행
+	 		voteBoardDtoList = ConcatenateVoteBoardListDto(request, voteBoardList);	 		
 		} catch (DataAccessException e) {
 			log.debug(e.getMessage());
 			svcResult = false;
@@ -218,5 +229,58 @@ public class VoteBoardService {
 		}
 		
 		return svcResult;
+	}
+	
+	// 특정 게시글 조회
+	public boolean voteBoardReading(String memberToken, HttpServletRequest request, int boardId, Model model) {
+		boolean svcResult = false;
+		VoteBoardReadDto voteBoardReadDto = null;
+		VoteBoardDto voteBoardDto = null;
+		MemberDto readMemberDto = null;
+		int readMemberId = 0;
+		
+		try {
+			// 회원토큰 인증 - 게시글 읽는사람 ID확인
+			if ((readMemberDto = jwtMemberAuth.getMemberFromToken(memberToken)) != null) {
+				readMemberId = readMemberDto.getMemberId();
+			}
+			
+			// 해당 게시글 DB조회
+			if ((voteBoardDto = voteBoardDao.selectVoteBoard(boardId)) == null) {
+				// 게시글을 찾을 수 없음
+				svcResult = false;
+				// throws...
+			}
+			
+			// 해당 게시글 작성자 닉네임 DB조회 
+			int writerMemberId = voteBoardDto.getWriterMemberId();
+			String writerMemberNickname = null;
+			if ((writerMemberNickname = memberDao.selectMemberNickname(writerMemberId)) == null) {
+				writerMemberNickname = ("UnknownMemberId:" + writerMemberId);
+			}
+			
+			// 게시글과 투표 결과 조인작업 수행
+			ArrayList<VoteBoardDto> voteBoardDtoList = new ArrayList<VoteBoardDto>();
+			voteBoardDtoList.add(voteBoardDto);
+			voteBoardReadDto = new VoteBoardReadDto(ConcatenateVoteBoardListDto(request, voteBoardDtoList).get(0));
+
+			// 게시글 Dto채워넣기
+			voteBoardReadDto.setReaderIsWriter(readMemberId == voteBoardDto.getWriterMemberId()); // (게시글 읽는 사람 == 게시글 작성자) 확인
+			voteBoardReadDto.setWriterMemberNickname(writerMemberNickname);
+			voteBoardReadDto.setVoteBoardWrittenDate(voteBoardDto.getVoteBoardWrittenDate());
+			voteBoardReadDto.setVoteBoardViewCnt(voteBoardDto.getVoteBoardViewCnt());
+			voteBoardReadDto.setVoteBoardContent(voteBoardDto.getVoteBoardContent());
+			voteBoardReadDto.setVoteEndDate(voteBoardDto.getVoteEndDate());
+			voteBoardReadDto.setVoteEndCnt(voteBoardDto.getVoteEndCnt());
+			voteBoardReadDto.setVoteAgreePercent((int)(voteBoardReadDto.getVoteAgreeCnt() * 100.0f / (voteBoardReadDto.getVoteAgreeCnt() + voteBoardReadDto.getVoteDisagreeCnt())));
+
+			model.addAttribute("voteBoardRead", voteBoardReadDto);
+			svcResult = true;
+		} catch (DataAccessException e) {
+			log.debug(e.getMessage());
+			svcResult = false;
+		}
+		
+		return svcResult; 
 	}
 }

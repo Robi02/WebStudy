@@ -10,11 +10,20 @@ public class VoteBoardListDto {
 		BS_ENDED,				// 마감
 	}
 	
-	private String voteBoardTitle;				// 투표게시글 제목
-	private String voteBoardImageURL;			// 투표게시글 이미지 경로
-	private EnumVoteBoardState voteBoardState;	// 투표게시글 상태
-	private int voteAgreeCnt;					// 투표게시글 찬성 개수
-	private int voteDisagreeCnt;				// 투표게시글 반대 개수
+	protected int voteBoardId;						// 투표게시글 번호
+	protected String voteBoardTitle;				// 투표게시글 제목
+	protected String voteBoardImageURL;				// 투표게시글 이미지 경로
+	protected EnumVoteBoardState voteBoardState;	// 투표게시글 상태
+	protected int voteAgreeCnt;						// 투표게시글 찬성 개수
+	protected int voteDisagreeCnt;					// 투표게시글 반대 개수
+
+	public int getVoteBoardId() {
+		return voteBoardId;
+	}
+
+	public void setVoteBoardId(int voteBoardId) {
+		this.voteBoardId = voteBoardId;
+	}
 
 	public String getVoteBoardTitle() {
 		return voteBoardTitle;

@@ -17,11 +17,107 @@
 <body>
 	<div class="container" style="padding-top: 100px;">
 		<h2 class="page.headder">${voteBoardRead.voteBoardTitle}</h2>
-		
-		
-		
-		
-		<!-- 게시글 수정을 위한 주석
+			<table class="table table-bordered">
+				<tr>
+					<td class="align-middle"><image src="${voteBoardRead.voteBoardImageURL}"></td>
+				</tr>
+				<tr>
+					<td>${voteBoardRead.voteBoardContent}</td>
+				</tr>
+				<tr>
+					<td class="align-middle">
+						<c:choose>
+							<c:when test="${(voteBoardRead.voteAgreeCnt+voteBoardRead.voteDisagreeCnt)>0}"> <%-- 투표자가 0명 이상일 때 --%>
+								<div class="progress">
+									<div class="progress-bar progress-bar-success" role="progressbar" style="width:${voteBoardRead.voteAgreePercent}%">
+										<spring:message code="boards.agree"/> (${voteBoardRead.voteAgreePercent}%)
+									</div>
+									<div class="progress-bar progress-bar-danger" role="progressbar" style="width:${100-voteBoardRead.voteAgreePercent}%">
+										<spring:message code="boards.disagree"/> (${100-voteBoardRead.voteAgreePercent}%)
+									</div>
+								</div>	
+							</c:when>
+							<c:otherwise> <%-- 투표자가 없을 때 --%>
+								<div class="progress">
+									<div class="progress-bar progress-bar-warning" role="progressbar" style="width:100%">
+										<spring:message code="boards.zeroVoter"/>	
+									</div>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<c:set var="voteProgressesURL" value="../../voteprogresses/${voteBoardRead.voteBoardId}"/>
+						<button id="voteAgreeBtn" type="button" class="btn btn-success"><spring:message code="boards.agree"/> (${voteBoardRead.voteAgreeCnt})</button>
+						<button id="voteDisagreeBtn" type="button" class="btn btn-danger"><spring:message code="boards.disagree"/> (${voteBoardRead.voteDisagreeCnt})</button>
+
+						<input type="hidden" id="boardId" value="${voteBoardRead.voteBoardId}"/>
+						<input type="hidden" id="alreadyVote" value='<spring:message code="voteboards.alreadyVoted"/>'/>
+						<input type="hidden" id="needLogin" value='<spring:message code="members.needLogin"/>'/>
+						<input type="hidden" id="memberGradeError" value='<spring:message code="members.gradeError"/>'/>
+					</td>
+				</tr>
+				<tr>
+					<!-- 덧글... -->
+				</tr>
+			</table>
+			
+			<script>
+				function getContextPath() {
+					var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+					return location.href.substring( hostIndex, location.href.indexOf('/', hostIndex + 1) );
+				};
+				
+				function refreshVote() {
+					// ... 새로고침 하는 함수를 만들어보자 [여기부터 시작]
+				}
+
+				$("#voteAgreeBtn").bind("click",function(){
+					$.ajax({
+						url : getContextPath() + "/voteprogresses/" + $("#boardId").val() + "/agree",
+						type: "POST",
+						data : {},
+						success : function(result){
+							if(result == 'alreadyVote'){
+								alert($("#alreadyVote").val());
+								return false;
+							} else if (result == 'needLogin'){
+								alert($("#needLogin").val());
+								return false;
+							} else if (result == 'memberGradeError') {
+								alert($("#memberGradeError").val());
+								return false;
+							} else {
+								refreshVote();
+								return true;
+							}
+						}
+					});
+				});
+
+				$("#voteDisagreeBtn").bind("click",function(){
+					$.ajax({
+						url : getContextPath() + "/voteprogresses/" +$("#boardId").val() + "/disagree",
+						type: "POST",
+						data : {},
+						success : function(result){
+							if(result == 'alreadyVote'){
+								alert($("#alreadyVote").val());
+								return false;
+							} else if ( result == 'needLogin'){
+								alert($("#needLogin").val());
+								return false;
+							} else if (result == 'memberGradeError') {
+								alert($("#memberGradeError").val());
+								return false;
+							} else {
+								refreshVote();
+								return true;
+							}
+						}
+					});
+				});
+			</script>
+
+		<%-- 게시글 수정을 위한 주석
 		<form:form action="./" method="PUT" modelAttribute="voteBoardWriteCmd" enctype="multipart/form-data">
 			<table class="table table-bordered">
 				<tr>
@@ -50,7 +146,7 @@
 				</tr>
 			</table>
 			<input type="submit" onclick="boardWrite()" class="btn btn-primary" value="작성하기"/>
-		</form:form> -->
+		</form:form> --%>
 	</div>
 </body>
 <script>

@@ -27,7 +27,7 @@ public class MemberService {
 	//////////	//////////	//////////	//////////	//////////	//////////	//////////
 	
 	// 회원토큰 생성(쿠키)
-	private void generateMemberToken(String memberToken, HttpServletResponse response) {
+	public void generateMemberToken(String memberToken, HttpServletResponse response) {
 		Cookie memberCookie = new Cookie("memberToken", memberToken);
 		memberCookie.setPath("/");
 		memberCookie.setComment("memberToken");
@@ -36,12 +36,31 @@ public class MemberService {
 	}
 	
 	// 회원토큰 제거(쿠키)
-	private void removeMemberToken(HttpServletResponse response) {
+	public void removeMemberToken(HttpServletResponse response) {
 		Cookie memberCookie = new Cookie("memberToken", null);
 		memberCookie.setPath("/");
 		memberCookie.setComment("memberToken");
 		memberCookie.setMaxAge(0);
 		response.addCookie(memberCookie);
+	}
+	
+	// 회원 권한 확인
+	public boolean checkMemberGrade(int memberId, MemberDto.EnumMemberGradeId memberGradeOver) {
+		boolean svcResult = false;
+		MemberDto checkMember = new MemberDto();
+		checkMember.setMemberId(memberId);
+		
+		if ((checkMember = memberDao.memberSelect(checkMember)) != null) { // 회원정보 있음
+			if (memberGradeOver.getValue() <= checkMember.getMemberGradeId()) { // 요청 권한 이상
+				svcResult = true;
+			} else { // 요청 권한 이하
+				svcResult = false;
+			}
+		} else { // 회원정보 없음
+			svcResult = false;
+		}
+		
+		return svcResult;
 	}
 	
 	//////////	//////////	//////////	//////////	//////////	//////////	//////////

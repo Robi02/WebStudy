@@ -7,6 +7,11 @@
 		SELECT COUNT(*) FROM vote_boards_tb;
 	</select>
 
+	<select id="selectVoteBoard" resultType="com.spring.yesorno.dto.VoteBoardDto">
+		SELECT * FROM vote_boards_tb
+		WHERE VOTE_BOARD_ID=#{param1};
+	</select>
+
 	<select id="selectVoteBoardList" resultType="com.spring.yesorno.dto.VoteBoardDto">
 		SELECT * FROM vote_boards_tb
 		ORDER BY VOTE_BOARD_ID DESC LIMIT #{param1},#{param2};

@@ -27,8 +27,8 @@
 	    			<c:when test="${!empty voteBoardList}">
 			    		<c:forEach items="${voteBoardList}" var="board">
 			    			<tr>
-								<td class="align-middle">${board.voteBoardTitle}</td>
-								<td class="align-middle"><image src="${board.voteBoardImageURL}" width="200" height="50"></td>
+								<td class="align-middle"><a href="../${board.voteBoardId}">${board.voteBoardTitle}</a></td>
+								<td class="align-middle"><image src="${board.voteBoardImageURL}" width="75" height="50"></td>
 								<td class="align-middle">
 									<spring:message code="boards.agree"/>:${board.voteAgreeCnt} &#47; 
 									<spring:message code="boards.disagree"/>:${board.voteDisagreeCnt}

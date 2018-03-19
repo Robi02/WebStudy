@@ -10,6 +10,12 @@ public class MemberDao implements IMemberDao {
 
 	@Autowired private SqlSessionTemplate sqlSession;
 
+	// 회원 닉네임 조회
+	public String selectMemberNickname(int memberId) throws DataAccessException {
+		IMemberDao memberDao = sqlSession.getMapper(IMemberDao.class);
+		return memberDao.selectMemberNickname(memberId);
+	}
+	
 	// 회원 조회
 	public MemberDto memberSelect(MemberDto memberDto) throws DataAccessException {
 		IMemberDao memberDao = sqlSession.getMapper(IMemberDao.class);

@@ -11,5 +11,8 @@
 	<bean id="voteBoardService" class="com.spring.yesorno.service.VoteBoardService">
 		<constructor-arg name="dataPerPage" value="8"/> <!-- 한 페이지에 표시할 게시글의 수 -->
 	</bean>
+	
+	<!-- VoteProgressService -->
+	<bean id="voteProgressService" class="com.spring.yesorno.service.VoteProgressService"/>
 
 </beans>
