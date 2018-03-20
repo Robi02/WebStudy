@@ -1,17 +1,24 @@
 package com.spring.yesorno.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.spring.yesorno.command.VoteBoardWriteCmd;
 import com.spring.yesorno.service.VoteBoardService;
 import com.spring.yesorno.validator.VoteBoardWriteValidator;
@@ -74,6 +81,41 @@ public class VoteBoardsController {
 		String resultURL = errURL;
 
 		if (voteBoardService.voteBoardReading(memberToken, request, boardId, model)) {
+			resultURL = okURL;
+		} else {
+			resultURL = errURL;
+		}
+
+		return resultURL;
+	}
+	
+	// 투표 게시글 수정
+	// [U]PUT: /boards/voteboards/{boardId}
+	@RequestMapping(value = "/{boardId}", method = RequestMethod.PUT)
+	public @ResponseBody String voteBoardUpdate(@CookieValue(value = "memberToken", required = false) String memberToken, @PathVariable("boardId") int boardId, @RequestBody String data) {
+		final String okValue = "success";
+		final String errValue = "error";
+		String resultValue = errValue;
+		String modifiedContent = data; // 1. 찌꺼기 데이터가 같이 오는 이유 (여기부터 시작)
+		
+		if (voteBoardService.voteBoardModifyContent(memberToken, boardId, modifiedContent)) { // 2. json파싱해야함 {"ㄴ":"ㄴ"}
+			resultValue = okValue;
+		} else {
+			resultValue = errValue;
+		}
+		
+		return resultValue;
+	}
+	
+	// 투표 게시글 삭제
+	// [D]DELETE: /boards/voteboards/{boardId}
+	@RequestMapping(value = "/{boardId}", method = RequestMethod.DELETE)
+	public @ResponseBody String voteBoardDelete(@CookieValue(value = "memberToken", required = false) String memberToken, @PathVariable("boardId") int boardId) {
+		final String okURL = "boards/voteboards/list/1";
+		final String errURL = "boards/voteboards/" + boardId;
+		String resultURL = errURL;
+		
+		if (voteBoardService.voteBoardDelete(memberToken, boardId)) {
 			resultURL = okURL;
 		} else {
 			resultURL = errURL;

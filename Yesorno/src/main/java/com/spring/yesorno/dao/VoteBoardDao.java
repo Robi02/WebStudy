@@ -35,4 +35,16 @@ public class VoteBoardDao implements IVoteBoardDao{
 		IVoteBoardDao voteBoardDao = sqlSession.getMapper(IVoteBoardDao.class);
 		return voteBoardDao.insertVoteBoard(voteBoardDto);
 	}
+	
+	// 게시글 본문내용 수정
+	public int updateVoteBoardContent(int boardId, String modifiedContent) {
+		IVoteBoardDao voteBoardDao = sqlSession.getMapper(IVoteBoardDao.class);
+		return voteBoardDao.updateVoteBoardContent(boardId, modifiedContent);
+	}
+	
+	// 게시글 번호로 삭제
+	public int deleteVoteBoard(int boardId) throws DataAccessException {
+		IVoteBoardDao voteBoardDao = sqlSession.getMapper(IVoteBoardDao.class);
+		return voteBoardDao.deleteVoteBoard(boardId);
+	}
 }

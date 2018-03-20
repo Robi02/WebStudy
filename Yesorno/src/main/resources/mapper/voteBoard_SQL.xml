@@ -24,4 +24,14 @@
 		#{voteBoardContent},#{voteBoardImageURL},#{voteEndDate},#{voteEndCnt});
 	</insert>
 
+	<update id="updateVoteBoardContent">
+		UPDATE vote_boards_tb SET VOTE_BOARD_CONTENT=#{param2}
+		WHERE VOTE_BOARD_ID=#{param1};
+	</update>
+
+	<delete id="deleteVoteBoard">
+		DELETE FROM vote_boards_tb
+		WHERE VOTE_BOARD_ID=#{param1};
+	</delete>
+
 </mapper>

@@ -283,4 +283,94 @@ public class VoteBoardService {
 		
 		return svcResult; 
 	}
+
+	// 투표 게시글 삭제
+	public boolean voteBoardDelete(String memberToken, int boardId) {
+		boolean svcResult = false;
+		VoteBoardDto voteBoardDto = null;
+		MemberDto readMemberDto = null;
+		int readMemberId = 0;
+		
+		try {
+			// 회원토큰 인증 - 게시글 읽는사람 ID확인
+			if ((readMemberDto = jwtMemberAuth.getMemberFromToken(memberToken)) != null) {
+				readMemberId = readMemberDto.getMemberId();
+			} else {
+				return false; // 회원토큰 인증 실패
+			}
+			
+			// 해당 게시글 DB조회
+			if ((voteBoardDto = voteBoardDao.selectVoteBoard(boardId)) == null) {
+				return false; // 게시글을 찾을 수 없음
+			}
+			
+			// 작성자 본인여부 확인
+			if (readMemberId != voteBoardDto.getWriterMemberId()) {
+				return false; // 작성자 본인이 아님
+			}
+			
+			// 게시글 삭제
+			if (voteBoardDao.deleteVoteBoard(boardId) != 1) {
+				return false; // 게시글 삭제 실패
+			} else {
+				svcResult = true; // 게시글 삭제 성공
+			}
+			
+		} catch (DataAccessException e) {
+			log.debug(e.getMessage());
+			svcResult = false;
+		}
+		
+		return svcResult;
+	}
+
+	// 투표 게시글 내용 수정
+	public boolean voteBoardModifyContent(String memberToken, int boardId, String modifiedContent) {
+		boolean svcResult = false;
+		VoteBoardDto voteBoardDto = null;
+		MemberDto readMemberDto = null;
+		int readMemberId = 0;
+
+		try {
+			// 본문 내용 검사
+			if (modifiedContent == null) {
+				return false; // 본문 없음
+			}
+			
+			int contentLength = modifiedContent.length(); 
+			if (contentLength < 2 || contentLength > 256) {
+				return false; // 본문이 너무 김
+			}
+
+			// 회원토큰 인증 - 게시글 읽는사람 ID확인
+			if ((readMemberDto = jwtMemberAuth.getMemberFromToken(memberToken)) != null) {
+				readMemberId = readMemberDto.getMemberId();
+			} else {
+				return false; // 회원토큰 인증 실패
+			}
+			
+			// 해당 게시글 DB조회
+			if ((voteBoardDto = voteBoardDao.selectVoteBoard(boardId)) == null) {
+				return false; // 게시글을 찾을 수 없음
+			}
+			
+			// 작성자 본인여부 확인
+			if (readMemberId != voteBoardDto.getWriterMemberId()) {
+				return false; // 작성자 본인이 아님
+			}
+						
+			// 게시글 내용 수정
+			if (voteBoardDao.updateVoteBoardContent(boardId, modifiedContent) != 1) {
+				return false; // 게시글 내용 수정 실패
+			} else {
+				svcResult = true; // 게시글 내용수정 성공
+			}
+
+		} catch (DataAccessException e) {
+			log.debug(e.getMessage());
+			svcResult = false;
+		}
+		
+		return svcResult;
+	}
 }
