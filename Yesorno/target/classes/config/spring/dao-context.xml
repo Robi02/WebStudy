@@ -6,5 +6,6 @@
 	<bean id="memberDao" class="com.spring.yesorno.dao.MemberDao"/>
 	<bean id="voteBoardDao" class="com.spring.yesorno.dao.VoteBoardDao"/>
 	<bean id="voteProgressDao" class="com.spring.yesorno.dao.VoteProgressDao"/>
+	<bean id="commentDao" class="com.spring.yesorno.dao.CommentDao"/>
 
 </beans>

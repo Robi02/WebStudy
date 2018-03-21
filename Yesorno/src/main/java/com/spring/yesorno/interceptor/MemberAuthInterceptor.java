@@ -13,7 +13,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.spring.yesorno.dto.MemberDto;
 import com.spring.yesorno.exception.MemberException;
-import com.spring.yesorno.util.jwt.JwtMemberAuth;
+import com.spring.yesorno.util.JwtMemberAuth;
 
 public class MemberAuthInterceptor extends HandlerInterceptorAdapter {
 

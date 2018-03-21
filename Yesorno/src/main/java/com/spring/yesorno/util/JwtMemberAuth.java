@@ -1,4 +1,4 @@
-package com.spring.yesorno.util.jwt;
+package com.spring.yesorno.util;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;

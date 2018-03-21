@@ -12,7 +12,7 @@ import com.spring.yesorno.dao.VoteProgressDao;
 import com.spring.yesorno.dto.MemberDto;
 import com.spring.yesorno.dto.VoteProgressDto;
 import com.spring.yesorno.dto.VoteResultDto;
-import com.spring.yesorno.util.jwt.JwtMemberAuth;
+import com.spring.yesorno.util.JwtMemberAuth;
 
 public class VoteProgressService {
 

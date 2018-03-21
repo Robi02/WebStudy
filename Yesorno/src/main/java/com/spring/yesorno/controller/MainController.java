@@ -14,7 +14,7 @@ import com.spring.yesorno.command.MemberLoginCmd;
 import com.spring.yesorno.command.MemberRegistrationCmd;
 import com.spring.yesorno.dto.MemberDto;
 import com.spring.yesorno.service.MemberService;
-import com.spring.yesorno.util.jwt.JwtMemberAuth;
+import com.spring.yesorno.util.JwtMemberAuth;
 
 @Controller
 public class MainController {

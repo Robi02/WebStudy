@@ -23,15 +23,13 @@
 	<!-- Body -->
 	<div class="container" style="padding-top: 100px;">
 		<h2 class="page.headder">${voteBoardRead.voteBoardTitle}</h2> <%-- 게시글 제목 --%>
-		<table class="table table-bordered">
+		<table id="content_table" class="table table-bordered">
 			<tr> <%-- 게시글 썸네일 --%>
-				<td class="align-middle"><image src="${voteBoardRead.voteBoardImageURL}"></td>
+				<td class="align-middle"><img src="${voteBoardRead.voteBoardImageURL}"></td>
 			</tr>
 			<tr> <%-- 게시글 내용 --%>
 				<td>
-					<div id="voteBoardContent" style="display: block"> <%-- 게시글 내용 --%>
-						${voteBoardRead.voteBoardContent}
-					</div>
+					<div id="voteBoardContent" style="display: block">${voteBoardRead.voteBoardContent}</div> <%-- 게시글 내용 --%>
 					<div id="voteBoardContentModify" style="display: none"> <%-- 게시글 수정 --%>
 						<textarea class="form-control" id="summernote" name="content" placeholder="content" maxlength="140" rows="7"></textarea>
 					</div>
@@ -88,9 +86,19 @@
 					</tr>
 				</c:when>
 			</c:choose>
-			<tr>
-				<!-- 덧글... -->
-			</tr>
+		</table>
+		<%-- 덧글 --%>
+		<table id="comment_table" class="table table-bordered">
+			<%-- 마지막 덧글 위치 --%>
+			<tr id="nextCommentRow"></tr>
+			<%-- 덧글 입력란 --%>
+			<tr><td>
+				<div class="form-group">
+  					<label for="comment"><spring:message code="comments.title"/></label>
+  					<textarea class="form-control" rows="5" id="commentTextArea"></textarea>
+				</div>
+				<button id="writeCommentBtn" type="button" class="btn btn-success"><spring:message code="comments.write"/></button>
+			</td></tr>
 		</table>
 	</div>
 </body>
@@ -100,7 +108,7 @@
 			var hostIndex = location.href.indexOf( location.host ) + location.host.length;
 			return location.href.substring( hostIndex, location.href.indexOf('/', hostIndex + 1) );
 		};
-		
+
 		<%-- 게이지바 UI 수정 --%>
 		function refreshVoteUI(uiHide, result) {
 			if (result.voteAgreeCnt + result.voteDisagreeCnt == 0) { <%-- 투표자 없음 --%>
@@ -204,16 +212,14 @@
 		<%-- 글 수정 ajax --%>
 		$("#voteBoardModifyAjax").bind("click", function() {
 			var boardContent = $('.note-editable').html();
-			alert(boardContent);
 			var ajaxData = {"modifiedContent":boardContent};
-			alert(ajaxData);
 			$.ajax({
 				url : getContextPath() + "/boards/voteboards/" + $("#boardId").val(),
 				type: "PUT",
 				data : JSON.stringify(ajaxData),
 				contentType:"application/json;charset=UTF-8",
 				success : function(result) {
-					alert("success " + result);
+					alert("<spring:message code="boards.modifyDone"/>");
 					if (result == "success") {
 						boardWrite(); // summernote 내용 카피 
 						refreshModifyUI(false);
@@ -221,7 +227,7 @@
 						refreshModifyUI(true);
 					}
 				},
-				error : function(result) {}
+				error : function(result) { alert("<spring:message code="boards.modifyErr"/>"); }
 			});
 		});
 		
@@ -254,5 +260,27 @@
 	        var boardContent = $('#summernote').summernote('code');
 			$('#voteBoardContent').html(boardContent);
 		}
+		
+		<%-- 덧글 쓰기 ajax --%>
+		$("#writeCommentBtn").bind("click", function() {
+			var comment = $("#commentTextArea").val();
+			var ajaxData = {"comment":comment};
+			$.ajax({
+				url : getContextPath() + "/boards/voteboards/" + $("#boardId").val() + "/comments",
+				type : "POST",
+				data : JSON.stringify(ajaxData),
+				contentType:"application/json;charset=UTF-8",
+				success : function(resultStr) {
+					alert(resultStr);
+					var result = JSON.parse(resultStr);
+					if (result.result == "success") {
+						alert("<spring:message code="comments.writeDone"/>");
+					} else {
+						alert("<spring:message code="comments.writeErr"/>");
+					}
+				},
+				error : function(result) { alert("<spring:message code="comments.writeErr"/>"); }
+			});
+		});
 	</script>
 </html>

@@ -27,7 +27,7 @@ import com.spring.yesorno.dto.VoteBoardListDto;
 import com.spring.yesorno.dto.VoteBoardReadDto;
 import com.spring.yesorno.dto.VoteProgressDto;
 import com.spring.yesorno.exception.MemberException;
-import com.spring.yesorno.util.jwt.JwtMemberAuth;
+import com.spring.yesorno.util.JwtMemberAuth;
 
 public class VoteBoardService {
 

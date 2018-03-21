@@ -17,7 +17,7 @@ import com.spring.yesorno.command.MemberRegistrationCmd;
 import com.spring.yesorno.dao.MemberDao;
 import com.spring.yesorno.dto.MemberDto;
 import com.spring.yesorno.exception.MemberException;
-import com.spring.yesorno.util.jwt.JwtMemberAuth;
+import com.spring.yesorno.util.JwtMemberAuth;
 
 public class MemberService {
 

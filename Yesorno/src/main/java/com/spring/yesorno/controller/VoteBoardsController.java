@@ -1,12 +1,10 @@
 package com.spring.yesorno.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -18,18 +16,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.spring.yesorno.command.VoteBoardWriteCmd;
 import com.spring.yesorno.service.VoteBoardService;
+import com.spring.yesorno.util.JsonParser;
 import com.spring.yesorno.validator.VoteBoardWriteValidator;
 
 @Controller
 @RequestMapping("/boards/voteboards")
 public class VoteBoardsController {
 
-	@Autowired VoteBoardService voteBoardService; 
-
-	@Autowired VoteBoardWriteValidator voteBoardWriteValidator;
+	@Autowired private JsonParser jsonParser;
+	@Autowired private VoteBoardService voteBoardService; 
+	@Autowired private VoteBoardWriteValidator voteBoardWriteValidator;
+	
+	private Log log = LogFactory.getLog(VoteBoardsController.class);
 	
 	// 투표 게시글 리스트
 	@RequestMapping(value = "/list/{page}", method = RequestMethod.GET)
@@ -92,18 +92,22 @@ public class VoteBoardsController {
 	// 투표 게시글 수정
 	// [U]PUT: /boards/voteboards/{boardId}
 	@RequestMapping(value = "/{boardId}", method = RequestMethod.PUT)
-	public @ResponseBody String voteBoardUpdate(@CookieValue(value = "memberToken", required = false) String memberToken, @PathVariable("boardId") int boardId, @RequestBody String data) {
+	public @ResponseBody String voteBoardUpdate(@CookieValue(value = "memberToken", required = false) String memberToken, @PathVariable("boardId") int boardId, @RequestBody String jsonData) {
 		final String okValue = "success";
 		final String errValue = "error";
 		String resultValue = errValue;
-		String modifiedContent = data; // 1. 찌꺼기 데이터가 같이 오는 이유 (여기부터 시작)
-		
-		if (voteBoardService.voteBoardModifyContent(memberToken, boardId, modifiedContent)) { // 2. json파싱해야함 {"ㄴ":"ㄴ"}
-			resultValue = okValue;
-		} else {
-			resultValue = errValue;
+
+		try {
+			String modifiedContent = (String)jsonParser.mapFromJsonString(jsonData).get("modifiedContent");
+			if (voteBoardService.voteBoardModifyContent(memberToken, boardId, modifiedContent)) {
+				resultValue = okValue;
+			} else {
+				resultValue = errValue;
+			}
+		} catch (Exception e) {
+			log.debug(e.getMessage());
 		}
-		
+
 		return resultValue;
 	}
 	

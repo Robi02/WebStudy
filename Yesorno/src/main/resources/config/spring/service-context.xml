@@ -15,4 +15,7 @@
 	<!-- VoteProgressService -->
 	<bean id="voteProgressService" class="com.spring.yesorno.service.VoteProgressService"/>
 
+	<!-- CommentService -->
+	<bean id="commentService" class="com.spring.yesorno.service.CommentService"/>
+
 </beans>
